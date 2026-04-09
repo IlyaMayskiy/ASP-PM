@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using ASP_PM.Data;
+using ASP_PM.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.
     AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 

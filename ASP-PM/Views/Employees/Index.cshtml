@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ASP_PM.Models.Employee>
+
+<h2>Сотрудники</h2>
+<p><a asp-action="Create">Создать</a></p>
+
+<table class="table">
+    <thead>
+        <tr><th>First Name</th><th>Last Name</th><th>Patronymic</th><th>Email</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FirstName</td>
+                <td>@item.SecondName</td>
+                <td>@item.Patronymic</td>
+                <td>@item.Email</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
+                        <button type="submit" onclick="return confirm('Delete?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
