@@ -6412,7 +6412,8 @@
     "net8.0": [
       "Microsoft.EntityFrameworkCore.Sqlite >= 9.0.14",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.14",
-      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.23"
+      "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.23",
+      "System.Text.Json >= 9.0.14"
     ]
   },
   "packageFolders": {
@@ -6422,11 +6423,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\ASP-PM.csproj",
+      "projectUniqueName": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\asp-pm\\asp-pm\\ASP-PM.csproj",
       "projectName": "ASP-PM",
-      "projectPath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\ASP-PM.csproj",
+      "projectPath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\asp-pm\\asp-pm\\ASP-PM.csproj",
       "packagesPath": "C:\\Users\\scopi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\obj\\",
+      "outputPath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\asp-pm\\asp-pm\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -6479,6 +6480,10 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[8.0.23, )"
+          },
+          "System.Text.Json": {
+            "target": "Package",
+            "version": "[9.0.14, )"
           }
         },
         "imports": [

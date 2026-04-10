@@ -1,67 +1,37 @@
-﻿@model ASP_PM.Models.Project
+﻿@model ASP_PM.Models.Employee
 
 @{
-    ViewData["Title"] = "Edit Project";
+    ViewData["Title"] = "Edit Employee";
 }
 
-<h2>Project</h2>
+<h2>Edit Employee</h2>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="ClientCompany"></label>
-        <input asp-for="ClientCompany" class="form-control" />
+        <label asp-for="SecondName"></label>
+        <input asp-for="SecondName" class="form-control" />
+        <span asp-validation-for="SecondName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="ExecutorCompany"></label>
-        <input asp-for="ExecutorCompany" class="form-control" />
+        <label asp-for="Patronymic"></label>
+        <input asp-for="Patronymic" class="form-control" />
+        <span asp-validation-for="Patronymic" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="StartDate"></label>
-        <input asp-for="StartDate" type="date" class="form-control" />
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="EndDate"></label>
-        <input asp-for="EndDate" type="date" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Priority"></label>
-        <input asp-for="Priority" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="ProjectManagerId">Project Manager</label>
-        <select asp-for="ProjectManagerId" asp-items="@(ViewData["ProjectManagerId"] as SelectList)" class="form-control">
-            <option value="">-- Select Manager --</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Executors (select by checkbox)</label><br />
-        @if (ViewBag.AllEmployees != null)
-        {
-            var selectedIds = ViewBag.SelectExecutorIds as int[] ?? Array.Empty<int>();
-            foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
-            {
-                var isChecked = selectedIds.Contains(emp.Id);
-                <div class="form-check">
-                    <input type="checkbox" name="selectExecutors" value="@emp.Id" class="form-check-input" id="chk_@emp.Id" @(isChecked ? "checked" : "") />
-                    <label class="form-check-label" for="chk_@emp.Id">@emp.FullName</label>
-                </div>
-            }
-        }
-    </div>
-
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

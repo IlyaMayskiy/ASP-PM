@@ -29,7 +29,7 @@ public class ProjectWizardController : Controller
         var employees = await _employeeService.GetAllAsync();
         if (!string.IsNullOrEmpty(term))
         {
-            employees = employees.Where(e => 
+            employees = employees.Where(e =>
                 e.FullName.Contains(term, StringComparison.OrdinalIgnoreCase) ||
                 e.Email.Contains(term, StringComparison.OrdinalIgnoreCase));
         }
@@ -41,7 +41,8 @@ public class ProjectWizardController : Controller
     public async Task<IActionResult> UploadFiles(List<IFormFile> files)
     {
         var tempFolder = Path.Combine(_env.WebRootPath, "temp");
-        if (!Directory.Exists(tempFolder)) Directory.CreateDirectory(tempFolder);
+        if (!Directory.Exists(tempFolder))
+            Directory.CreateDirectory(tempFolder);
 
         var fileNames = new List<string>();
         foreach (var file in files)
@@ -58,7 +59,7 @@ public class ProjectWizardController : Controller
         TempData["UploadedFiles"] = JsonSerializer.Serialize(fileNames);
         return Json(new { success = true, files = fileNames });
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Finish(ProjectWizardModel model)
     {
@@ -75,6 +76,32 @@ public class ProjectWizardController : Controller
                 ProjectManagerId = model.ProjectManagerId
             };
             await _projectService.CreateAsync(project, model.SelectedExecutors ?? Array.Empty<int>());
+
+            var uploadedFilesJson = TempData["UploadedFiles"] as string;
+            if (!string.IsNullOrEmpty(uploadedFilesJson))
+            {
+                var fileNames = JsonSerializer.Deserialize<List<string>>(uploadedFilesJson);
+                if (fileNames != null)
+                {
+                    var tempFolder = Path.Combine(_env.WebRootPath, "temp");
+                    var projectFolder = Path.Combine(_env.WebRootPath, "project_docs", project.Id.ToString());
+                    if (!Directory.Exists(projectFolder))
+                        Directory.CreateDirectory(projectFolder);
+
+                    foreach (var fileName in fileNames)
+                    {
+                        var tempPath = Path.Combine(tempFolder, fileName);
+                        if (System.IO.File.Exists(tempPath))
+                        {
+                            var destPath = Path.Combine(projectFolder, fileName);
+                            System.IO.File.Move(tempPath, destPath);
+                            await _projectService.AddDocumentAsync(project.Id, fileName, fileName);
+                        }
+                    }
+                }
+                TempData.Remove("UploadedFiles");
+            }
+
             return RedirectToAction("Index", "Projects");
         }
         return View("Wizard", model);

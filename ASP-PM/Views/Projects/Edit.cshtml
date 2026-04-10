@@ -6,62 +6,161 @@
 
 <h2>Edit Project</h2>
 
-<form asp-action="Edit" method="post">
+<form id="editForm" asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
+
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="ClientCompany"></label>
         <input asp-for="ClientCompany" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="ExecutorCompany"></label>
         <input asp-for="ExecutorCompany" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="StartDate"></label>
         <input asp-for="StartDate" type="date" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="EndDate"></label>
         <input asp-for="EndDate" type="date" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="Priority"></label>
         <input asp-for="Priority" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="ProjectManagerId">Project Manager</label>
-        <select asp-for="ProjectManagerId" asp-items="@(ViewData["ProjectManagerId"] as SelectList)" class="form-control">
-            <option value="">-- Select Manager --</option>
-        </select>
+        <select asp-for="ProjectManagerId" id="managerSelect" class="form-control" style="width: 100%;"></select>
     </div>
 
     <div class="form-group">
-        <label>Executors</label><br />
-        @if (ViewBag.AllEmployees != null)
-        {
-            var selectedIds = ViewBag.SelectedExecutorIds as int[] ?? Array.Empty<int>();
-            foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
-            {
-                var isChecked = selectedIds.Contains(emp.Id);
-                <div class="form-check">
-                    <input type="checkbox" name="selectedExecutors" value="@emp.Id" class="form-check-input" id="chk_@emp.Id" @(isChecked ? "checked" : "") />
-                    <label class="form-check-label" for="chk_@emp.Id">@(emp.FullName ?? $"{emp.SecondName} {emp.FirstName}")</label>
-                </div>
-            }
-        }
+        <label>Executors</label>
+        <select id="executorsSelect" name="selectedExecutors" multiple class="form-control" style="width: 100%;"></select>
     </div>
+
+    <h3>Project Documents</h3>
+    <div id="docDropzone" style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer; margin-bottom:20px;">
+        Drag & drop new files here or click to upload
+    </div>
+    <input type="file" id="docFileInput" multiple style="display:none;" />
+    <ul id="docList"></ul>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function() {
+            // ========== SELECT2 ДЛЯ РУКОВОДИТЕЛЯ ==========
+            $('#managerSelect').select2({
+                ajax: {
+                    url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function(params) { return { term: params.term || '' }; },
+                    processResults: function(data) { return { results: data }; },
+                    cache: true
+                },
+                placeholder: 'Search or select manager',
+                minimumInputLength: 0,
+                allowClear: true
+            });
+            // Если уже выбран руководитель – установим его в select2
+            var initialManagerId = @(Model.ProjectManagerId ?? 0);
+            if (initialManagerId > 0) {
+                $.get('@Url.Action("SearchEmployees", "ProjectWizard")?term=', function(data) {
+                    var manager = data.find(function(e) { return e.id == initialManagerId; });
+                    if (manager) {
+                        var option = new Option(manager.text, manager.id, true, true);
+                        $('#managerSelect').append(option).trigger('change');
+                    }
+                });
+            }
+
+            // ========== SELECT2 ДЛЯ ИСПОЛНИТЕЛЕЙ ==========
+            $('#executorsSelect').select2({
+                ajax: {
+                    url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                    dataType: 'json',
+                    delay: 300,
+                    data: function(params) { return { term: params.term || '' }; },
+                    processResults: function(data) { return { results: data }; },
+                    cache: true
+                },
+                placeholder: 'Search or select executors',
+                minimumInputLength: 0,
+                allowClear: true,
+                multiple: true
+            });
+            // Загрузим текущих исполнителей
+            var selectedExecutors = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Executors.Select(e => new { id = e.Id, name = e.FullName })));
+            selectedExecutors.forEach(function(exec) {
+                var option = new Option(exec.name, exec.id, true, true);
+                $('#executorsSelect').append(option).trigger('change');
+            });
+
+            // ========== УПРАВЛЕНИЕ ДОКУМЕНТАМИ ==========
+            function loadDocuments() {
+                fetch('@Url.Action("GetFiles", "Projects", new { projectId = Model.Id })')
+                    .then(res => res.json())
+                    .then(files => {
+                        const list = $('#docList');
+                        list.empty();
+                        files.forEach(f => {
+                            list.append($('<li>').text(f.originalName + ' (' + new Date(f.uploadDate).toLocaleDateString() + ') ').append(
+                                $('<button>').text('Delete').addClass('delete-doc btn btn-sm btn-danger').data('id', f.id)
+                            ));
+                        });
+                    });
+            }
+
+            const dropzone = document.getElementById('docDropzone');
+            const fileInput = document.getElementById('docFileInput');
+            dropzone.addEventListener('click', () => fileInput.click());
+            dropzone.addEventListener('dragover', e => e.preventDefault());
+            dropzone.addEventListener('drop', e => {
+                e.preventDefault();
+                uploadDocFiles(e.dataTransfer.files);
+            });
+            fileInput.addEventListener('change', () => uploadDocFiles(fileInput.files));
+
+            function uploadDocFiles(files) {
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) formData.append('file', files[i]);
+                fetch('@Url.Action("UploadFile", "Projects", new { projectId = Model.Id })', {
+                    method: 'POST',
+                    body: formData
+                }).then(res => res.json()).then(data => {
+                    if (data.success) loadDocuments();
+                });
+            }
+
+            $(document).on('click', '.delete-doc', function() {
+                const id = $(this).data('id');
+                fetch('@Url.Action("DeleteFile", "Projects")?id=' + id, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => { if (data.success) loadDocuments(); });
+            });
+
+            loadDocuments();
+        });
+    </script>
 }

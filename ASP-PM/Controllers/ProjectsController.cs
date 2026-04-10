@@ -16,7 +16,6 @@ namespace ASP_PM.Controllers
             _employeeService = employeeService;
         }
 
-        // GET: Projects
         public async Task<IActionResult> Index(DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy = "startdate", bool ascending = true)
         {
             var projects = await _projectService.GetFilteredAsync(startDateFrom, startDateTo, priority, sortBy, ascending);
@@ -30,21 +29,17 @@ namespace ASP_PM.Controllers
             ViewBag.Executors = new MultiSelectList(employees, "Id", "FullName", selectedExecutors);
         }
 
-        // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var project = await _projectService.GetByIdAsync(id);
             if (project == null) return NotFound();
             var selectedExecutors = project.Executors.Select(e => e.Id).ToArray();
             await PopulateSelectLists(project.ProjectManagerId, selectedExecutors);
-
             ViewBag.AllEmployees = await _employeeService.GetAllAsync();
             ViewBag.SelectedExecutorIds = selectedExecutors;
-
             return View(project);
         }
 
-        // POST: Projects/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Project project, int[] selectedExecutors)
@@ -61,13 +56,35 @@ namespace ASP_PM.Controllers
             return View(project);
         }
 
-        // POST: Projects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             await _projectService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> GetFiles(int projectId)
+        {
+            var files = await _projectService.GetDocumentsAsync(projectId);
+            return Json(files.Select(f => new { f.Id, f.OriginalName, f.UploadDate }));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(int projectId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest();
+
+            var doc = await _projectService.AddDocumentAsync(projectId, file);
+            return Json(new { success = true, doc });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFile(int id)
+        {
+            var result = await _projectService.DeleteDocumentAsync(id);
+            return Json(new { success = result });
         }
     }
 }
