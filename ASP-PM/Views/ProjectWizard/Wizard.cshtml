@@ -1,0 +1,201 @@
+@model ASP_PM.Models.ProjectWizardModel
+@{
+    ViewData["Title"] = "New Project Wizard";
+}
+
+<style>
+    .step { display: none; }
+    .step.active { display: block; }
+    .dropzone { border: 2px dashed #ccc; padding: 40px; text-align: center; cursor: pointer; margin-bottom: 20px; }
+    .dropzone.drag-over { background-color: #e9e9e9; }
+    #fileList { margin-top: 10px; }
+</style>
+
+<h2>Create New Project (Wizard)</h2>
+
+<form id="wizardForm" method="post" enctype="multipart/form-data">
+    <div id="step1" class="step active">
+        <h3>Step 1: Basic Information</h3>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate"></label>
+            <input asp-for="StartDate" type="date" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate"></label>
+            <input asp-for="EndDate" type="date" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Priority"></label>
+            <input asp-for="Priority" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-primary next-step">Next</button>
+    </div>
+
+    <div id="step2" class="step">
+        <h3>Step 2: Companies</h3>
+        <div class="form-group">
+            <label asp-for="ClientCompany"></label>
+            <input asp-for="ClientCompany" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="ExecutorCompany"></label>
+            <input asp-for="ExecutorCompany" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-secondary prev-step">Back</button>
+        <button type="button" class="btn btn-primary next-step">Next</button>
+    </div>
+
+    <div id="step3" class="step">
+        <h3>Step 3: Project Manager</h3>
+        <div class="form-group">
+            <label>Search Manager</label>
+            <select id="managerSelect" name="ProjectManagerId" class="form-control" style="width: 100%;"></select>
+        </div>
+        <button type="button" class="btn btn-secondary prev-step">Back</button>
+        <button type="button" class="btn btn-primary next-step">Next</button>
+    </div>
+
+    <div id="step4" class="step">
+        <h3>Step 4: Executors</h3>
+        <div class="form-group">
+            <label>Search and select executors</label>
+            <select id="executorsSelect" name="SelectedExecutors" multiple class="form-control" style="width: 100%;"></select>
+        </div>
+        <button type="button" class="btn btn-secondary prev-step">Back</button>
+        <button type="button" class="btn btn-primary next-step">Next</button>
+    </div>
+
+    <div id="step5" class="step">
+        <h3>Step 5: Upload Documents</h3>
+        <div id="dropzone" class="dropzone">
+            Drag & drop files here or click to select
+        </div>
+        <input type="file" id="fileInput" multiple style="display:none;" />
+        <ul id="fileList"></ul>
+        <button type="button" class="btn btn-secondary prev-step">Back</button>
+        <button type="submit" class="btn btn-success">Finish</button>
+    </div>
+</form>
+
+@section Scripts {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function showStep(step) {
+            $('.step').removeClass('active');
+            $('#step' + step).addClass('active');
+            currentStep = step;
+        }
+
+        $('.next-step').click(function() {
+            if (currentStep < totalSteps) {
+                if (currentStep === 1) {
+                    if (!$('#Name').val()) {
+                        alert('Project Name is required');
+                        return;
+                    }
+                    if (!$('#StartDate').val() || !$('#EndDate').val()) {
+                        alert('Start and End dates are required');
+                        return;
+                    }
+                }
+                showStep(currentStep + 1);
+            }
+        });
+
+        $('.prev-step').click(function() {
+            if (currentStep > 1) showStep(currentStep - 1);
+        });
+
+        $('#managerSelect').select2({
+            ajax: {
+                url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                dataType: 'json',
+                delay: 300,
+                data: function(params) {
+                    return { term: params.term || '' };
+                },
+                processResults: function(data) {
+                    return { results: data };
+                },
+                cache: true
+            },
+            placeholder: 'Search or select manager',
+            minimumInputLength: 0, 
+            allowClear: true
+        });
+
+        $('#executorsSelect').select2({
+            ajax: {
+                url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                dataType: 'json',
+                delay: 300,
+                data: function(params) {
+                    return { term: params.term || '' };
+                },
+                processResults: function(data) {
+                    return { results: data };
+                },
+                cache: true
+            },
+            placeholder: 'Search or select executors',
+            minimumInputLength: 0,
+            allowClear: true,
+            multiple: true
+        });
+
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('drag-over');
+        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('drag-over');
+            uploadFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
+
+        function uploadFiles(files) {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
+            fetch('@Url.Action("UploadFiles", "ProjectWizard")', {
+                method: 'POST',
+                body: formData
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    data.files.forEach(f => {
+                        const li = document.createElement('li');
+                        li.textContent = f;
+                        fileList.appendChild(li);
+                    });
+                }
+            });
+        }
+
+        $('#wizardForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('@Url.Action("Finish", "ProjectWizard")', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) window.location.href = '@Url.Action("Index", "Projects")';
+                else alert('Error saving project');
+            });
+        });
+    </script>
+}

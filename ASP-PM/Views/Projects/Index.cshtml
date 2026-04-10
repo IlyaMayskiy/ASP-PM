@@ -1,0 +1,78 @@
+﻿@model IEnumerable<ASP_PM.Models.Project>
+
+<h2>Projects</h2>
+<p>
+    <a asp-controller="ProjectWizard" asp-action="Wizard" class="btn btn-success">Create New Project</a>
+</p>
+<form method="get" asp-action="Index">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Start date from</label>
+            <input type="date" name="startDateFrom" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label>Start date to</label>
+            <input type="date" name="startDateTo" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label>Priority</label>
+            <input type="number" name="priority" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label>Sort by</label>
+            <select name="sortBy" class="form-control">
+                <option value="name">Name</option>
+                <option value="startdate">Start Date</option>
+                <option value="priority">Priority</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Ascending</label>
+            <select name="ascending" class="form-control">
+                <option value="true">Asc</option>
+                <option value="false">Desc</option>
+            </select>
+        </div>
+        <div class="col-md-12 mt-2">
+            <button type="submit" class="btn btn-primary">Apply</button>
+            <a asp-action="Index" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Client</th>
+            <th>Executor</th>
+            <th>StartDate</th>
+            <th>EndDate</th>
+            <th>Priority</th>
+            <th>Manager</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.ClientCompany</td>
+                <td>@item.ExecutorCompany</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@item.Priority</td>
+                <td>@(item.ProjectManager?.FullName ?? "")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
+                        <button type="submit" onclick="return confirm('Delete this project?')">Delete</button>
+                    </form>
+                 </td>
+            </tr>
+        }
+    </tbody>
+</table>

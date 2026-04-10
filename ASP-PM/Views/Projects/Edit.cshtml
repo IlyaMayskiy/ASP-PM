@@ -1,12 +1,13 @@
 ﻿@model ASP_PM.Models.Project
 
 @{
-    ViewData["Title"] = "Create Project";
+    ViewData["Title"] = "Edit Project";
 }
 
-<h2>Create Project</h2>
+<h2>Edit Project</h2>
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
@@ -40,20 +41,22 @@
     </div>
 
     <div class="form-group">
-        <label>Executors (select by checkbox)</label><br />
+        <label>Executors</label><br />
         @if (ViewBag.AllEmployees != null)
         {
+            var selectedIds = ViewBag.SelectedExecutorIds as int[] ?? Array.Empty<int>();
             foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
             {
+                var isChecked = selectedIds.Contains(emp.Id);
                 <div class="form-check">
-                    <input type="checkbox" name="selectExecutors" value="@emp.Id" class="form-check-input" id="chk_@emp.Id" />
-                    <label class="form-check-label" for="chk_@emp.Id">@emp.FullName</label>
+                    <input type="checkbox" name="selectedExecutors" value="@emp.Id" class="form-check-input" id="chk_@emp.Id" @(isChecked ? "checked" : "") />
+                    <label class="form-check-label" for="chk_@emp.Id">@(emp.FullName ?? $"{emp.SecondName} {emp.FirstName}")</label>
                 </div>
             }
         }
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 

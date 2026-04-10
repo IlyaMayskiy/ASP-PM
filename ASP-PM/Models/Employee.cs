@@ -7,6 +7,6 @@ public class Employee
     public string? SecondName { get; set; }
     public string? Patronymic { get; set; }
     public string Email { get; set; } = string.Empty;
-
+    public string FullName => $"{SecondName} {FirstName} {Patronymic}".Trim();
     public ICollection<Project> ExecutorOfProjects { get; set; } = new List<Project>();
 }

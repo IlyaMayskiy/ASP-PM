@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "73VsgwXqxxE=",
+  "dgSpecHash": "zyVsFFF9vmc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\ASP-PM.csproj",
+  "projectFilePath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\asp-pm\\ASP-PM.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\scopi\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\scopi\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
