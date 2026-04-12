@@ -1,4 +1,5 @@
 ﻿@model ASP_PM.Models.Project
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Edit Project";
@@ -9,35 +10,36 @@
 <form id="editForm" asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ClientCompany"></label>
-        <input asp-for="ClientCompany" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ExecutorCompany"></label>
-        <input asp-for="ExecutorCompany" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="StartDate"></label>
-        <input asp-for="StartDate" type="date" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="EndDate"></label>
-        <input asp-for="EndDate" type="date" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Priority"></label>
-        <input asp-for="Priority" class="form-control" />
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientCompany"></label>
+                <input asp-for="ClientCompany" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ExecutorCompany"></label>
+                <input asp-for="ExecutorCompany" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="StartDate"></label>
+                <input asp-for="StartDate" type="date" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate"></label>
+                <input asp-for="EndDate" type="date" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Priority"></label>
+                <input asp-for="Priority" class="form-control" />
+            </div>
+        </div>
     </div>
 
     <div class="form-group">
@@ -50,15 +52,65 @@
         <select id="executorsSelect" name="selectedExecutors" multiple class="form-control" style="width: 100%;"></select>
     </div>
 
-    <h3>Project Documents</h3>
+    <h3 class="mt-4">Documents</h3>
     <div id="docDropzone" style="border:2px dashed #ccc; padding:20px; text-align:center; cursor:pointer; margin-bottom:20px;">
-        Drag & drop new files here or click to upload
+        Drag & drop files here or click to upload
     </div>
     <input type="file" id="docFileInput" multiple style="display:none;" />
-    <ul id="docList"></ul>
+    <ul id="docList" class="list-group mt-2"></ul>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <h3 class="mt-4">Project Tasks</h3>
+    <div>
+        <button type="button" class="btn btn-sm btn-primary mb-2" id="showAddTaskForm">+ Add Task</button>
+        <div id="addTaskForm" style="display:none;" class="mb-3 p-3 border rounded">
+            <div class="row">
+                <div class="col-md-3">
+                    <input type="text" id="newTaskName" class="form-control" placeholder="Task name *" />
+                </div>
+                <div class="col-md-2">
+                    <select id="newTaskAuthor" class="form-control">
+                        <option value="">-- Author * --</option>
+                        @foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
+                        {
+                            <option value="@emp.Id">@emp.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="newTaskExecutor" class="form-control">
+                        <option value="">-- Executor (optional) --</option>
+                        @foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
+                        {
+                            <option value="@emp.Id">@emp.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <input type="number" id="newTaskPriority" class="form-control" placeholder="Priority" value="1" />
+                </div>
+                <div class="col-md-4">
+                    <textarea id="newTaskComment" class="form-control" placeholder="Comment (optional)" rows="1"></textarea>
+                </div>
+            </div>
+            <div class="mt-2">
+                <button type="button" id="createTaskBtn" class="btn btn-success">Create</button>
+                <button type="button" id="cancelAddTask" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div id="taskCreateResult" class="mt-2"></div>
+        </div>
+
+        <table class="table table-sm table-bordered" id="tasksTable">
+            <thead>
+                <tr><th>Name</th><th>Status</th><th>Priority</th><th>Executor</th><th>Actions</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
 </form>
 
 @section Scripts {
@@ -67,9 +119,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
 
+    @{
+        var executorsList = Model.Executors != null
+            ? Model.Executors.Select(e => new { id = e.Id, name = e.FullName })
+            : Enumerable.Empty<object>();
+        var executorsJson = System.Text.Json.JsonSerializer.Serialize(executorsList);
+    }
+
     <script>
         $(function() {
-            // ========== SELECT2 ДЛЯ РУКОВОДИТЕЛЯ ==========
             $('#managerSelect').select2({
                 ajax: {
                     url: '@Url.Action("SearchEmployees", "ProjectWizard")',
@@ -83,7 +141,6 @@
                 minimumInputLength: 0,
                 allowClear: true
             });
-            // Если уже выбран руководитель – установим его в select2
             var initialManagerId = @(Model.ProjectManagerId ?? 0);
             if (initialManagerId > 0) {
                 $.get('@Url.Action("SearchEmployees", "ProjectWizard")?term=', function(data) {
@@ -95,7 +152,6 @@
                 });
             }
 
-            // ========== SELECT2 ДЛЯ ИСПОЛНИТЕЛЕЙ ==========
             $('#executorsSelect').select2({
                 ajax: {
                     url: '@Url.Action("SearchEmployees", "ProjectWizard")',
@@ -110,14 +166,13 @@
                 allowClear: true,
                 multiple: true
             });
-            // Загрузим текущих исполнителей
-            var selectedExecutors = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Executors.Select(e => new { id = e.Id, name = e.FullName })));
+
+            var selectedExecutors = @Html.Raw(executorsJson);
             selectedExecutors.forEach(function(exec) {
                 var option = new Option(exec.name, exec.id, true, true);
                 $('#executorsSelect').append(option).trigger('change');
             });
 
-            // ========== УПРАВЛЕНИЕ ДОКУМЕНТАМИ ==========
             function loadDocuments() {
                 fetch('@Url.Action("GetFiles", "Projects", new { projectId = Model.Id })')
                     .then(res => res.json())
@@ -125,9 +180,15 @@
                         const list = $('#docList');
                         list.empty();
                         files.forEach(f => {
-                            list.append($('<li>').text(f.originalName + ' (' + new Date(f.uploadDate).toLocaleDateString() + ') ').append(
-                                $('<button>').text('Delete').addClass('delete-doc btn btn-sm btn-danger').data('id', f.id)
-                            ));
+                            const btn = $('<button>')
+                                .text('Delete')
+                                .attr('type', 'button')
+                                .addClass('delete-doc btn btn-sm btn-danger ms-2')
+                                .data('id', f.id);
+                            const li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center')
+                                .text(f.originalName + ' (' + new Date(f.uploadDate).toLocaleDateString() + ')')
+                                .append(btn);
+                            list.append(li);
                         });
                     });
             }
@@ -155,12 +216,96 @@
 
             $(document).on('click', '.delete-doc', function() {
                 const id = $(this).data('id');
+                const $li = $(this).closest('li');
                 fetch('@Url.Action("DeleteFile", "Projects")?id=' + id, { method: 'POST' })
                     .then(res => res.json())
-                    .then(data => { if (data.success) loadDocuments(); });
+                    .then(data => {
+                        if (data.success) $li.remove();
+                    });
+            });
+
+            function loadTasks() {
+                fetch('@Url.Action("GetProjectTasks", "Projects")?projectId=@Model.Id')
+                    .then(res => res.json())
+                    .then(tasks => {
+                        const tbody = $('#tasksTable tbody');
+                        tbody.empty();
+                        tasks.forEach(t => {
+                            const row = $('<tr>');
+                            row.append($('<td>').text(t.name));
+                            const statusCell = $('<td>');
+                            const statusSelect = $('<select>').addClass('task-status form-control form-control-sm');
+                            statusSelect.append($('<option>').val('ToDo').text('ToDo').prop('selected', t.status === 'ToDo'));
+                            statusSelect.append($('<option>').val('InProgress').text('InProgress').prop('selected', t.status === 'InProgress'));
+                            statusSelect.append($('<option>').val('Done').text('Done').prop('selected', t.status === 'Done'));
+                            statusSelect.data('task-id', t.id);
+                            statusCell.append(statusSelect);
+                            row.append(statusCell);
+                            row.append($('<td>').text(t.priority));
+                            row.append($('<td>').text(t.executorName));
+                            const actionsCell = $('<td>');
+                            const deleteBtn = $('<button>').text('Delete').addClass('btn btn-sm btn-danger delete-task').data('task-id', t.id);
+                            actionsCell.append(deleteBtn);
+                            row.append(actionsCell);
+                            tbody.append(row);
+                        });
+                    });
+            }
+
+            $(document).on('change', '.task-status', function() {
+                const taskId = $(this).data('task-id');
+                const newStatus = $(this).val();
+                fetch('@Url.Action("UpdateTaskStatus", "Projects")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ taskId: taskId, status: newStatus })
+                }).then(() => loadTasks());
+            });
+
+            $(document).on('click', '.delete-task', function() {
+                const taskId = $(this).data('task-id');
+                if (confirm('Delete this task?')) {
+                    fetch('@Url.Action("DeleteTask", "Projects")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ taskId: taskId })
+                    }).then(() => loadTasks());
+                }
+            });
+
+            $('#showAddTaskForm').click(() => $('#addTaskForm').show());
+            $('#cancelAddTask').click(() => $('#addTaskForm').hide());
+
+            $('#createTaskBtn').click(function() {
+                const name = $('#newTaskName').val();
+                if (!name) { alert('Task name is required'); return; }
+                const authorId = $('#newTaskAuthor').val();
+                if (!authorId) { alert('Author is required'); return; }
+                const executorId = $('#newTaskExecutor').val();
+                const priority = $('#newTaskPriority').val();
+                const comment = $('#newTaskComment').val();
+
+                $.post('@Url.Action("AddTaskToProject", "Projects")', {
+                    projectId: @Model.Id,
+                    name: name,
+                    authorId: authorId,
+                    executorId: executorId,
+                    priority: priority,
+                    comment: comment
+                }, function() {
+                    $('#addTaskForm').hide();
+                    $('#newTaskName').val('');
+                    $('#newTaskAuthor').val('');
+                    $('#newTaskComment').val('');
+                    $('#newTaskPriority').val('1');
+                    $('#newTaskExecutor').val('');
+                    loadTasks();
+                    $('#taskCreateResult').html('<div class="alert alert-success">Task created</div>').fadeOut(2000);
+                }).fail(() => $('#taskCreateResult').html('<div class="alert alert-danger">Error creating task</div>'));
             });
 
             loadDocuments();
+            loadTasks();
         });
     </script>
 }

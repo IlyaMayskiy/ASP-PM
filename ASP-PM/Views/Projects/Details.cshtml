@@ -1,0 +1,65 @@
+@model ASP_PM.Models.Project
+
+@{
+    ViewData["Title"] = @Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+        <dt class="col-sm-2">Client Company</dt>
+        <dd class="col-sm-10">@Model.ClientCompany</dd>
+        <dt class="col-sm-2">Executor Company</dt>
+        <dd class="col-sm-10">@Model.ExecutorCompany</dd>
+        <dt class="col-sm-2">Start Date</dt>
+        <dd class="col-sm-10">@Model.StartDate.ToShortDateString()</dd>
+        <dt class="col-sm-2">End Date</dt>
+        <dd class="col-sm-10">@Model.EndDate.ToShortDateString()</dd>
+        <dt class="col-sm-2">Priority</dt>
+        <dd class="col-sm-10">@Model.Priority</dd>
+        <dt class="col-sm-2">Project Manager</dt>
+        <dd class="col-sm-10">@Model.ProjectManager?.FullName</dd>
+    </dl>
+</div>
+
+<h3>Tasks</h3>
+
+@if (ViewBag.Tasks != null && ((IEnumerable<ASP_PM.Models.TaskItem>)ViewBag.Tasks).Any())
+{
+    <div class="row">
+        @foreach (var task in ViewBag.Tasks)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>@task.Name</strong>
+                        <span class="badge bg-secondary">Priority: @task.Priority</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Status:</strong> @task.Status</p>
+                        <p><strong>Executor:</strong> @(task.Executor?.FullName ?? "Unassigned")</p>
+                        <p><strong>Comment:</strong> @(string.IsNullOrEmpty(task.Comment) ? "—" : task.Comment)</p>
+                    </div>
+                    <div class="card-footer text-end">
+                        <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <form asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete task?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No tasks for this project.</p>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

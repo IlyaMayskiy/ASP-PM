@@ -46,6 +46,7 @@ public class ProjectService : IProjectService
         return await _dbContext.Projects
             .Include(p => p.ProjectManager)
             .Include(p => p.Executors)
+            .Include(p => p.Tasks)
             .ToListAsync();
     }
 
@@ -62,6 +63,7 @@ public class ProjectService : IProjectService
         var query = _dbContext.Projects
             .Include(p => p.ProjectManager)
             .Include(p => p.Executors)
+            .Include(p => p.Tasks)
             .AsQueryable();
 
         if (startDateFrom.HasValue)
@@ -168,5 +170,13 @@ public class ProjectService : IProjectService
         _dbContext.ProjectDocuments.Remove(doc);
         await _dbContext.SaveChangesAsync();
         return true;
+    }
+    public async Task<IEnumerable<TaskItem>> GetTasksByProjectIdAsync(int projectId)
+    {
+        return await _dbContext.Tasks
+            .Where(t => t.ProjectId == projectId)
+            .Include(t => t.Author)
+            .Include(t => t.Executor)
+            .ToListAsync();
     }
 }

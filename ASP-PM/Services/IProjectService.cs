@@ -14,4 +14,5 @@ public interface IProjectService
     Task<ProjectDocument> AddDocumentAsync(int projectId, IFormFile file);
     Task<ProjectDocument> AddDocumentAsync(int projectId, string fileName, string originalName);
     Task<bool> DeleteDocumentAsync(int documentId);
+    Task<IEnumerable<TaskItem>> GetTasksByProjectIdAsync(int projectId);
 }

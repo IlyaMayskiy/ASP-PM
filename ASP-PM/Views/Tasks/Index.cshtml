@@ -1,0 +1,78 @@
+@model IEnumerable<ASP_PM.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<h2>Tasks</h2>
+
+<form method="get" asp-action="Index">
+    <div class="row">
+        <div class="col-md-3">
+            <label>Project</label>
+            <select name="projectId" asp-items="ViewBag.Projects" class="form-control">
+                <option value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Status</label>
+            <select name="status" asp-items="ViewBag.Statuses" class="form-control">
+                <option value="">-- All --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Sort by</label>
+            <select name="sortBy" class="form-control">
+                <option value="name">Name</option>
+                <option value="priority">Priority</option>
+                <option value="status">Status</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Ascending</label>
+            <select name="ascending" class="form-control">
+                <option value="true">Asc</option>
+                <option value="false">Desc</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Apply</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">Reset</a>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-success mt-3">Create New Task</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Project</th>
+            <th>Author</th>
+            <th>Executor</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Project?.Name</td>
+                <td>@item.Author?.FullName</td>
+                <td>@item.Executor?.FullName</td>
+                <td>@item.Status</td>
+                <td>@item.Priority</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
+                        <button type="submit" onclick="return confirm('Delete this task?')">Delete</button>
+                    </form>
+                 </td>
+             </tr>
+        }
+    </tbody>
+</table>
