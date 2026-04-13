@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ASP_PM.Models;
 
 namespace ASP_PM.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<AppUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -14,6 +15,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Project>()
             .HasOne(p => p.ProjectManager)
             .WithMany()
@@ -28,5 +31,9 @@ public class AppDbContext : DbContext
             .WithMany(p => p.Tasks)
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.AppUser)
+            .WithOne(u => u.Employee)
+            .HasForeignKey<Employee>(e => e.AppUserId);
     }
 }

@@ -50,15 +50,22 @@
         <button type="button" class="btn btn-primary next-step">Next</button>
     </div>
 
-    <div id="step3" class="step">
-        <h3>Step 3: Project Manager</h3>
-        <div class="form-group">
-            <label>Search Manager</label>
-            <select id="managerSelect" name="ProjectManagerId" class="form-control" style="width: 100%;"></select>
+    @if (!(ViewBag.IsManager == true))
+    {
+        <div id="step3" class="step">
+            <h3>Step 3: Project Manager</h3>
+            <div class="form-group">
+                <label>Search Manager</label>
+                <select id="managerSelect" name="ProjectManagerId" class="form-control" style="width: 100%;"></select>
+            </div>
+            <button type="button" class="btn btn-secondary prev-step">Back</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
         </div>
-        <button type="button" class="btn btn-secondary prev-step">Back</button>
-        <button type="button" class="btn btn-primary next-step">Next</button>
-    </div>
+    }
+    else
+    {
+        <div id="step3" style="display:none;"></div>
+    }
 
     <div id="step4" class="step">
         <h3>Step 4: Executors</h3>
@@ -87,7 +94,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         let currentStep = 1;
-        const totalSteps = 5;
+        let totalSteps = 5;
+        const isManager = @(ViewBag.IsManager == true ? "true" : "false");
+
+        function getNextStep(step) {
+            if (isManager && step === 2) return 4;
+            if (step === 3 && isManager) return 4;
+            return step + 1;
+        }
+
+        function getPrevStep(step) {
+            if (isManager && step === 4) return 2;
+            if (step === 3 && isManager) return 2;
+            return step - 1;
+        }
 
         function showStep(step) {
             $('.step').removeClass('active');
@@ -96,7 +116,8 @@
         }
 
         $('.next-step').click(function() {
-            if (currentStep < totalSteps) {
+            let next = getNextStep(currentStep);
+            if (next <= totalSteps) {
                 if (currentStep === 1) {
                     if (!$('#Name').val()) {
                         alert('Project Name is required');
@@ -107,12 +128,15 @@
                         return;
                     }
                 }
-                showStep(currentStep + 1);
+                showStep(next);
             }
         });
 
         $('.prev-step').click(function() {
-            if (currentStep > 1) showStep(currentStep - 1);
+            let prev = getPrevStep(currentStep);
+            if (prev >= 1) {
+                showStep(prev);
+            }
         });
 
         $('#managerSelect').select2({
@@ -120,30 +144,33 @@
                 url: '@Url.Action("SearchEmployees", "ProjectWizard")',
                 dataType: 'json',
                 delay: 300,
-                data: function(params) {
-                    return { term: params.term || '' };
-                },
-                processResults: function(data) {
-                    return { results: data };
-                },
+                data: function(params) { return { term: params.term || '' }; },
+                processResults: function(data) { return { results: data }; },
                 cache: true
             },
             placeholder: 'Search or select manager',
-            minimumInputLength: 0, 
+            minimumInputLength: 0,
             allowClear: true
         });
+
+        var initialManagerId = @(Model.ProjectManagerId ?? 0);
+        if (initialManagerId > 0 && !isManager) {
+            $.get('@Url.Action("SearchEmployees", "ProjectWizard")?term=', function(data) {
+                var manager = data.find(function(e) { return e.id == initialManagerId; });
+                if (manager) {
+                    var option = new Option(manager.text, manager.id, true, true);
+                    $('#managerSelect').append(option).trigger('change');
+                }
+            });
+        }
 
         $('#executorsSelect').select2({
             ajax: {
                 url: '@Url.Action("SearchEmployees", "ProjectWizard")',
                 dataType: 'json',
                 delay: 300,
-                data: function(params) {
-                    return { term: params.term || '' };
-                },
-                processResults: function(data) {
-                    return { results: data };
-                },
+                data: function(params) { return { term: params.term || '' }; },
+                processResults: function(data) { return { results: data }; },
                 cache: true
             },
             placeholder: 'Search or select executors',
@@ -151,6 +178,21 @@
             allowClear: true,
             multiple: true
         });
+
+        var selectedExecutors = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedExecutors ?? new int[0]));
+        if (selectedExecutors && selectedExecutors.length > 0) {
+            $.ajax({
+                url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                data: { term: '' },
+                success: function(data) {
+                    var selected = data.filter(function(e) { return selectedExecutors.indexOf(e.id) !== -1; });
+                    selected.forEach(function(exec) {
+                        var option = new Option(exec.text, exec.id, true, true);
+                        $('#executorsSelect').append(option).trigger('change');
+                    });
+                }
+            });
+        }
 
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
@@ -193,9 +235,13 @@
                 method: 'POST',
                 body: formData
             }).then(response => {
-                if (response.ok) window.location.href = '@Url.Action("Index", "Projects")';
-                else alert('Error saving project');
-            });
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    alert('Error saving project');
+                }
+            }).catch(() => alert('Error saving project'));
         });
+
     </script>
 }

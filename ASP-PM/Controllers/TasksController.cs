@@ -1,24 +1,28 @@
 using ASP_PM.Models;
 using ASP_PM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP_PM.Controllers;
 
+[Authorize]
 public class TasksController : Controller
 {
     private readonly ITaskService _taskService;
     private readonly IProjectService _projectService;
     private readonly IEmployeeService _employeeService;
+    private readonly UserManager<AppUser> _userManager;
 
-    public TasksController(ITaskService taskService, IProjectService projectService, IEmployeeService employeeService)
+    public TasksController(ITaskService taskService, IProjectService projectService, IEmployeeService employeeService, UserManager<AppUser> userManager)
     {
         _taskService = taskService;
         _projectService = projectService;
         _employeeService = employeeService;
+        _userManager = userManager;
     }
 
-    // GET: Tasks
     public async Task<IActionResult> Index(int? projectId, TaskState? status, string sortBy = "name", bool ascending = true)
     {
         var tasks = await _taskService.GetFilteredAsync(projectId, status, sortBy, ascending);
@@ -27,7 +31,6 @@ public class TasksController : Controller
         return View(tasks);
     }
 
-    // GET: Tasks/Create
     public async Task<IActionResult> Create(int? projectId)
     {
         ViewBag.Projects = new SelectList(await _projectService.GetAllAsync(), "Id", "Name", projectId);
@@ -37,9 +40,9 @@ public class TasksController : Controller
         return View(task);
     }
 
-    // POST: Tasks/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Create(TaskItem task)
     {
         if (ModelState.IsValid)
@@ -52,25 +55,34 @@ public class TasksController : Controller
         return View(task);
     }
 
-    // GET: Tasks/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
         var task = await _taskService.GetByIdAsync(id);
         if (task == null) return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        var isDirector = User.IsInRole("Director");
+        var isManager = User.IsInRole("ProjectManager");
+        if (!isDirector && !isManager)
+        {
+            return Forbid();
+        }
+
         ViewBag.Projects = new SelectList(await _projectService.GetAllAsync(), "Id", "Name", task.ProjectId);
         ViewBag.Employees = new SelectList(await _employeeService.GetAllAsync(), "Id", "FullName", task.AuthorId);
         return View(task);
     }
 
-    // POST: Tasks/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Edit(int id, TaskItem task)
     {
         if (id != task.Id) return BadRequest();
         if (ModelState.IsValid)
         {
-            await _taskService.UpdateAsync(id, task);
+            var updated = await _taskService.UpdateAsync(id, task);
+            if (updated == null) return NotFound();
             return RedirectToAction(nameof(Index));
         }
         ViewBag.Projects = new SelectList(await _projectService.GetAllAsync(), "Id", "Name", task.ProjectId);
@@ -78,9 +90,9 @@ public class TasksController : Controller
         return View(task);
     }
 
-    // POST: Tasks/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Delete(int id)
     {
         await _taskService.DeleteAsync(id);

@@ -1,4 +1,7 @@
 @model ASP_PM.Models.Project
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> UserManager
+@inject IEmployeeService EmployeeService
 
 @{
     ViewData["Title"] = @Model.Name;
@@ -32,6 +35,23 @@
     <div class="row">
         @foreach (var task in ViewBag.Tasks)
         {
+            var canEditStatus = false;
+            var user = await UserManager.GetUserAsync(User);
+            if (User.IsInRole("Director"))
+                canEditStatus = true;
+            else if (User.IsInRole("ProjectManager"))
+            {
+                var emp = await EmployeeService.GetByAppUserIdAsync(user.Id);
+                if (emp != null && Model.ProjectManagerId == emp.Id)
+                    canEditStatus = true;
+            }
+            else if (User.IsInRole("Employee"))
+            {
+                var emp = await EmployeeService.GetByAppUserIdAsync(user.Id);
+                if (emp != null && task.ExecutorId == emp.Id)
+                    canEditStatus = true;
+            }
+
             <div class="col-md-6 mb-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -39,15 +59,32 @@
                         <span class="badge bg-secondary">Priority: @task.Priority</span>
                     </div>
                     <div class="card-body">
-                        <p><strong>Status:</strong> @task.Status</p>
+                        <p>
+                            <strong>Status:</strong>
+                            @if (canEditStatus)
+                            {
+                                <select class="task-status form-select form-select-sm" data-task-id="@task.Id" style="width:auto; display:inline-block;">
+                                    <option value="ToDo" selected="@(task.Status.ToString() == "ToDo")">ToDo</option>
+                                    <option value="InProgress" selected="@(task.Status.ToString() == "InProgress")">InProgress</option>
+                                    <option value="Done" selected="@(task.Status.ToString() == "Done")">Done</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <span>@task.Status</span>
+                            }
+                        </p>
                         <p><strong>Executor:</strong> @(task.Executor?.FullName ?? "Unassigned")</p>
                         <p><strong>Comment:</strong> @(string.IsNullOrEmpty(task.Comment) ? "—" : task.Comment)</p>
                     </div>
                     <div class="card-footer text-end">
-                        <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <form asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete task?')">Delete</button>
-                        </form>
+                        @if (User.IsInRole("Director") || (User.IsInRole("ProjectManager") && Model.ProjectManagerId == (await EmployeeService.GetByAppUserIdAsync((await UserManager.GetUserAsync(User)).Id))?.Id))
+                        {
+                            <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-primary">Edit</a>
+                            <form asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete task?')">Delete</button>
+                            </form>
+                        }
                     </div>
                 </div>
             </div>
@@ -60,6 +97,27 @@ else
 }
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (User.IsInRole("Director") || (User.IsInRole("ProjectManager") && Model.ProjectManagerId == (await EmployeeService.GetByAppUserIdAsync((await UserManager.GetUserAsync(User)).Id))?.Id)){
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.task-status').change(function() {
+                var select = $(this);
+                var taskId = select.data('task-id');
+                var newStatus = select.val();
+                $.ajax({
+                    url: '@Url.Action("UpdateTaskStatus", "Projects")',
+                    type: 'POST',
+                    data: { taskId: taskId, status: newStatus },
+                    success: function() { console.log('Status updated'); },
+                    error: function() { alert('Error updating status'); }
+                });
+            });
+        });
+    </script>
+}

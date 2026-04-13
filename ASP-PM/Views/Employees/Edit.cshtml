@@ -1,5 +1,4 @@
 ﻿@model ASP_PM.Models.Employee
-
 @{
     ViewData["Title"] = "Edit Employee";
 }
@@ -7,27 +6,65 @@
 <h2>Edit Employee</h2>
 
 <form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
     <div class="form-group">
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" class="form-control" />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
+        <label>First Name</label>
+        <input name="firstName" value="@Model.FirstName" class="form-control" required />
     </div>
     <div class="form-group">
-        <label asp-for="SecondName"></label>
-        <input asp-for="SecondName" class="form-control" />
-        <span asp-validation-for="SecondName" class="text-danger"></span>
+        <label>Last Name</label>
+        <input name="secondName" value="@Model.SecondName" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="Patronymic"></label>
-        <input asp-for="Patronymic" class="form-control" />
-        <span asp-validation-for="Patronymic" class="text-danger"></span>
+        <label>Patronymic</label>
+        <input name="patronymic" value="@Model.Patronymic" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+        <label>Email</label>
+        <input name="email" value="@Model.Email" type="email" class="form-control" required />
     </div>
+    <div class="form-group">
+        <label>New Password (leave empty to keep current)</label>
+        <input name="password" type="password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Confirm New Password</label>
+        <input name="confirmPassword" type="password" class="form-control" />
+    </div>
+
+    @if (!ViewBag.IsSelf)
+    {
+        <div class="form-group">
+            <label>Role</label>
+            <select name="role" class="form-control" required>
+                <option value="Employee" selected="@(ViewBag.CurrentRole == "Employee")">Employee</option>
+                <option value="ProjectManager" selected="@(ViewBag.CurrentRole == "ProjectManager")">Project Manager</option>
+            </select>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" name="role" value="@ViewBag.CurrentRole" />
+    }
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>

@@ -1,26 +1,45 @@
 using ASP_PM.Models;
 using ASP_PM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace ASP_PM.Controllers;
 
+[Authorize(Roles = "Director,ProjectManager")]
 public class ProjectWizardController : Controller
 {
     private readonly IEmployeeService _employeeService;
     private readonly IProjectService _projectService;
     private readonly IWebHostEnvironment _env;
+    private readonly UserManager<AppUser> _userManager;
 
-    public ProjectWizardController(IEmployeeService employeeService, IProjectService projectService, IWebHostEnvironment env)
+    public ProjectWizardController(IEmployeeService employeeService, IProjectService projectService, IWebHostEnvironment env, UserManager<AppUser> userManager)
     {
         _employeeService = employeeService;
         _projectService = projectService;
         _env = env;
+        _userManager = userManager;
     }
 
-    public IActionResult Wizard()
+    public async Task<IActionResult> Wizard()
     {
         var model = new ProjectWizardModel();
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+            {
+                model.ProjectManagerId = employee.Id;
+            }
+            ViewBag.IsManager = true;
+        }
+        else
+        {
+            ViewBag.IsManager = false;
+        }
         return View(model);
     }
 
@@ -59,51 +78,67 @@ public class ProjectWizardController : Controller
         TempData["UploadedFiles"] = JsonSerializer.Serialize(fileNames);
         return Json(new { success = true, files = fileNames });
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Finish(ProjectWizardModel model)
     {
-        if (ModelState.IsValid)
+        
+        if (!ModelState.IsValid)
+            return View("Wizard", model);
+
+        if (User.IsInRole("ProjectManager") && model.ProjectManagerId == null)
         {
-            var project = new Project
-            {
-                Name = model.Name,
-                ClientCompany = model.ClientCompany,
-                ExecutorCompany = model.ExecutorCompany,
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-                Priority = model.Priority,
-                ProjectManagerId = model.ProjectManagerId
-            };
-            await _projectService.CreateAsync(project, model.SelectedExecutors ?? Array.Empty<int>());
+            var user = await _userManager.GetUserAsync(User);
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+                model.ProjectManagerId = employee.Id;
+        }
 
-            var uploadedFilesJson = TempData["UploadedFiles"] as string;
-            if (!string.IsNullOrEmpty(uploadedFilesJson))
+        if (model.SelectedExecutors == null || !model.SelectedExecutors.Any())
+        {
+            ModelState.AddModelError("", "Please select at least one executor.");
+            return View("Wizard", model);
+        }
+
+        var project = new Project
+        {
+            Name = model.Name,
+            ClientCompany = model.ClientCompany,
+            ExecutorCompany = model.ExecutorCompany,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Priority = model.Priority,
+            ProjectManagerId = model.ProjectManagerId
+        };
+
+        var createdProject = await _projectService.CreateAsync(project, model.SelectedExecutors);
+
+        
+        var uploadedFilesJson = TempData["UploadedFiles"] as string;
+        if (!string.IsNullOrEmpty(uploadedFilesJson))
+        {
+            var fileNames = JsonSerializer.Deserialize<List<string>>(uploadedFilesJson);
+            if (fileNames != null)
             {
-                var fileNames = JsonSerializer.Deserialize<List<string>>(uploadedFilesJson);
-                if (fileNames != null)
+                var tempFolder = Path.Combine(_env.WebRootPath, "temp");
+                var projectFolder = Path.Combine(_env.WebRootPath, "project_docs", createdProject.Id.ToString());
+                if (!Directory.Exists(projectFolder))
+                    Directory.CreateDirectory(projectFolder);
+
+                foreach (var fileName in fileNames)
                 {
-                    var tempFolder = Path.Combine(_env.WebRootPath, "temp");
-                    var projectFolder = Path.Combine(_env.WebRootPath, "project_docs", project.Id.ToString());
-                    if (!Directory.Exists(projectFolder))
-                        Directory.CreateDirectory(projectFolder);
-
-                    foreach (var fileName in fileNames)
+                    var tempPath = Path.Combine(tempFolder, fileName);
+                    if (System.IO.File.Exists(tempPath))
                     {
-                        var tempPath = Path.Combine(tempFolder, fileName);
-                        if (System.IO.File.Exists(tempPath))
-                        {
-                            var destPath = Path.Combine(projectFolder, fileName);
-                            System.IO.File.Move(tempPath, destPath);
-                            await _projectService.AddDocumentAsync(project.Id, fileName, fileName);
-                        }
+                        var destPath = Path.Combine(projectFolder, fileName);
+                        System.IO.File.Move(tempPath, destPath);
+                        await _projectService.AddDocumentAsync(createdProject.Id, fileName, fileName);
                     }
                 }
-                TempData.Remove("UploadedFiles");
             }
-
-            return RedirectToAction("Index", "Projects");
+            TempData.Remove("UploadedFiles");
         }
-        return View("Wizard", model);
+
+        return RedirectToAction("Index", "Projects");
     }
 }

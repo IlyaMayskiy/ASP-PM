@@ -1,27 +1,46 @@
-﻿@model IEnumerable<ASP_PM.Models.Employee>
+﻿@using ASP_PM.Models
+@model List<(Employee Employee, string Role)>
 
-<h2>Сотрудники</h2>
-<p><a asp-action="Create">Создать</a></p>
+@{
+    ViewData["Title"] = "Employees";
+}
 
-<table class="table">
+<h2>Employees</h2>
+
+@if (User.IsInRole("Director"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New Employee</a>
+    </p>
+}
+
+<table class="table table-striped">
     <thead>
-        <tr><th>First Name</th><th>Last Name</th><th>Patronymic</th><th>Email</th><th></th></tr>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Patronymic</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.FirstName</td>
-                <td>@item.SecondName</td>
-                <td>@item.Patronymic</td>
-                <td>@item.Email</td>
+                <td>@item.Employee.FirstName</td>
+                <td>@item.Employee.SecondName</td>
+                <td>@item.Employee.Patronymic</td>
+                <td>@item.Employee.Email</td>
+                <td>@item.Role</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
-                        <button type="submit" onclick="return confirm('Delete?')">Delete</button>
+                    <a asp-action="Edit" asp-route-id="@item.Employee.Id">Edit</a> |
+                    <form asp-action="Delete" asp-route-id="@item.Employee.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-link" onclick="return confirm('Delete employee?')">Delete</button>
                     </form>
-                </td>
-            </tr>
+                 </td>
+             </tr>
         }
     </tbody>
 </table>

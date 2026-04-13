@@ -1,4 +1,5 @@
 ﻿using ASP_PM.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ASP_PM.Services;
 
@@ -10,6 +11,8 @@ public interface IProjectService
     Task<Project?> UpdateAsync(int id, Project project, int[] executorIds);
     Task<bool> DeleteAsync(int id);
     Task<IEnumerable<Project>> GetFilteredAsync(DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy, bool ascending);
+    Task<IEnumerable<Project>> GetProjectsByManagerIdAsync(int managerId, DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy, bool ascending);
+    Task<IEnumerable<Project>> GetProjectsByExecutorIdAsync(int executorId, DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy, bool ascending);
     Task<IEnumerable<ProjectDocument>> GetDocumentsAsync(int projectId);
     Task<ProjectDocument> AddDocumentAsync(int projectId, IFormFile file);
     Task<ProjectDocument> AddDocumentAsync(int projectId, string fileName, string originalName);

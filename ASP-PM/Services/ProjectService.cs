@@ -17,15 +17,18 @@ public class ProjectService : IProjectService
 
     public async Task<Project> CreateAsync(Project project, int[] executorIds)
     {
+        _dbContext.Projects.Add(project);
+        await _dbContext.SaveChangesAsync();
+
         if (executorIds != null && executorIds.Any())
         {
             var executors = await _dbContext.Employees
                 .Where(e => executorIds.Contains(e.Id))
                 .ToListAsync();
             project.Executors = executors;
+            await _dbContext.SaveChangesAsync();
         }
-        _dbContext.Projects.Add(project);
-        await _dbContext.SaveChangesAsync();
+
         return project;
     }
 
@@ -55,6 +58,7 @@ public class ProjectService : IProjectService
         return await _dbContext.Projects
             .Include(p => p.ProjectManager)
             .Include(p => p.Executors)
+            .Include(p => p.Tasks)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -80,7 +84,58 @@ public class ProjectService : IProjectService
             "priority" => ascending ? query.OrderBy(p => p.Priority) : query.OrderByDescending(p => p.Priority),
             _ => query.OrderBy(p => p.Id)
         };
+        return await query.ToListAsync();
+    }
 
+    public async Task<IEnumerable<Project>> GetProjectsByManagerIdAsync(int managerId, DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy, bool ascending)
+    {
+        var query = _dbContext.Projects
+            .Include(p => p.ProjectManager)
+            .Include(p => p.Executors)
+            .Include(p => p.Tasks)
+            .Where(p => p.ProjectManagerId == managerId)
+            .AsQueryable();
+
+        if (startDateFrom.HasValue)
+            query = query.Where(p => p.StartDate >= startDateFrom.Value);
+        if (startDateTo.HasValue)
+            query = query.Where(p => p.StartDate <= startDateTo.Value);
+        if (priority.HasValue)
+            query = query.Where(p => p.Priority == priority.Value);
+
+        query = sortBy?.ToLower() switch
+        {
+            "name" => ascending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name),
+            "startdate" => ascending ? query.OrderBy(p => p.StartDate) : query.OrderByDescending(p => p.StartDate),
+            "priority" => ascending ? query.OrderBy(p => p.Priority) : query.OrderByDescending(p => p.Priority),
+            _ => query.OrderBy(p => p.Id)
+        };
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Project>> GetProjectsByExecutorIdAsync(int executorId, DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy, bool ascending)
+    {
+        var query = _dbContext.Projects
+            .Include(p => p.ProjectManager)
+            .Include(p => p.Executors)
+            .Include(p => p.Tasks)
+            .Where(p => p.Executors.Any(e => e.Id == executorId))
+            .AsQueryable();
+
+        if (startDateFrom.HasValue)
+            query = query.Where(p => p.StartDate >= startDateFrom.Value);
+        if (startDateTo.HasValue)
+            query = query.Where(p => p.StartDate <= startDateTo.Value);
+        if (priority.HasValue)
+            query = query.Where(p => p.Priority == priority.Value);
+
+        query = sortBy?.ToLower() switch
+        {
+            "name" => ascending ? query.OrderBy(p => p.Name) : query.OrderByDescending(p => p.Name),
+            "startdate" => ascending ? query.OrderBy(p => p.StartDate) : query.OrderByDescending(p => p.StartDate),
+            "priority" => ascending ? query.OrderBy(p => p.Priority) : query.OrderByDescending(p => p.Priority),
+            _ => query.OrderBy(p => p.Id)
+        };
         return await query.ToListAsync();
     }
 
@@ -108,7 +163,6 @@ public class ProjectService : IProjectService
             foreach (var e in executors)
                 existing.Executors.Add(e);
         }
-
         await _dbContext.SaveChangesAsync();
         return existing;
     }
@@ -171,6 +225,7 @@ public class ProjectService : IProjectService
         await _dbContext.SaveChangesAsync();
         return true;
     }
+
     public async Task<IEnumerable<TaskItem>> GetTasksByProjectIdAsync(int projectId)
     {
         return await _dbContext.Tasks

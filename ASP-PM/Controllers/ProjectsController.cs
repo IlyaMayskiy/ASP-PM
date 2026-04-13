@@ -1,45 +1,97 @@
 ﻿using ASP_PM.Models;
 using ASP_PM.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP_PM.Controllers;
 
+[Authorize]
 public class ProjectsController : Controller
 {
     private readonly IProjectService _projectService;
     private readonly IEmployeeService _employeeService;
     private readonly ITaskService _taskService;
+    private readonly UserManager<AppUser> _userManager;
 
-    public ProjectsController(IProjectService projectService, IEmployeeService employeeService, ITaskService taskService)
+    public ProjectsController(IProjectService projectService, IEmployeeService employeeService, ITaskService taskService, UserManager<AppUser> userManager)
     {
         _projectService = projectService;
         _employeeService = employeeService;
         _taskService = taskService;
+        _userManager = userManager;
     }
 
-    // GET: Projects
+
     public async Task<IActionResult> Index(DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy = "startdate", bool ascending = true)
     {
-        var projects = await _projectService.GetFilteredAsync(startDateFrom, startDateTo, priority, sortBy, ascending);
+        var user = await _userManager.GetUserAsync(User);
+        var isDirector = User.IsInRole("Director");
+        var isManager = User.IsInRole("ProjectManager");
+        var isEmployee = User.IsInRole("Employee");
+
+        IEnumerable<Project> projects;
+        if (isDirector)
+        {
+            projects = await _projectService.GetFilteredAsync(startDateFrom, startDateTo, priority, sortBy, ascending);
+        }
+        else if (isManager)
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+                projects = await _projectService.GetProjectsByManagerIdAsync(employee.Id, startDateFrom, startDateTo, priority, sortBy, ascending);
+            else
+                projects = new List<Project>();
+        }
+        else
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+                projects = await _projectService.GetProjectsByExecutorIdAsync(employee.Id, startDateFrom, startDateTo, priority, sortBy, ascending);
+            else
+                projects = new List<Project>();
+        }
+
+        var currentEmployee = await _employeeService.GetByAppUserIdAsync(user?.Id);
+        ViewBag.CurrentEmployeeId = currentEmployee?.Id;
+
         return View(projects);
     }
 
-    // GET: Projects/Details/5
     public async Task<IActionResult> Details(int id)
     {
         var project = await _projectService.GetByIdAsync(id);
         if (project == null) return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        var isDirector = User.IsInRole("Director");
+        var isManager = User.IsInRole("ProjectManager");
+        var isEmployee = User.IsInRole("Employee");
+        var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+
+        if (!isDirector && !(isManager && project.ProjectManagerId == employee?.Id) && !(isEmployee && project.Executors.Any(e => e.Id == employee?.Id)))
+            return Forbid();
+
         var tasks = await _projectService.GetTasksByProjectIdAsync(id);
         ViewBag.Tasks = tasks;
         return View(project);
     }
 
-    // GET: Projects/Edit/5
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Edit(int id)
     {
         var project = await _projectService.GetByIdAsync(id);
         if (project == null) return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (project.ProjectManagerId != employee?.Id)
+                return Forbid();
+        }
+
         var selectedExecutors = project.Executors.Select(e => e.Id).ToArray();
         await PopulateSelectLists(project.ProjectManagerId, selectedExecutors);
         ViewBag.AllEmployees = await _employeeService.GetAllAsync();
@@ -47,12 +99,22 @@ public class ProjectsController : Controller
         return View(project);
     }
 
-    // POST: Projects/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Edit(int id, Project project, int[] selectedExecutors)
     {
         if (id != project.Id) return BadRequest();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            var existing = await _projectService.GetByIdAsync(id);
+            if (existing.ProjectManagerId != employee?.Id)
+                return Forbid();
+        }
+
         if (ModelState.IsValid)
         {
             var updated = await _projectService.UpdateAsync(id, project, selectedExecutors ?? Array.Empty<int>());
@@ -64,15 +126,27 @@ public class ProjectsController : Controller
         return View(project);
     }
 
-    // POST: Projects/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Delete(int id)
     {
+        var project = await _projectService.GetByIdAsync(id);
+        if (project == null) return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (project.ProjectManagerId != employee?.Id)
+                return Forbid();
+        }
+
         await _projectService.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> GetFiles(int projectId)
     {
         var files = await _projectService.GetDocumentsAsync(projectId);
@@ -80,6 +154,7 @@ public class ProjectsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> UploadFile(int projectId, IFormFile file)
     {
         if (file == null || file.Length == 0) return BadRequest();
@@ -88,12 +163,14 @@ public class ProjectsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> DeleteFile(int id)
     {
         var result = await _projectService.DeleteDocumentAsync(id);
         return Json(new { success = result });
     }
 
+    [HttpGet]
     public async Task<IActionResult> GetProjectTasks(int projectId)
     {
         var tasks = await _projectService.GetTasksByProjectIdAsync(projectId);
@@ -109,23 +186,72 @@ public class ProjectsController : Controller
     }
 
     [HttpPost]
+    [IgnoreAntiforgeryToken]
     public async Task<IActionResult> UpdateTaskStatus(int taskId, TaskState status)
     {
         var task = await _taskService.GetByIdAsync(taskId);
         if (task == null) return NotFound();
-        task.Status = status;
-        await _taskService.UpdateAsync(taskId, task);
-        return Ok();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+
+        if (User.IsInRole("Director"))
+        {
+            task.Status = status;
+            await _taskService.UpdateAsync(taskId, task);
+            return Ok();
+        }
+
+        if (User.IsInRole("ProjectManager"))
+        {
+            var project = await _projectService.GetByIdAsync(task.ProjectId);
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (project != null && employee != null && project.ProjectManagerId == employee.Id)
+            {
+                task.Status = status;
+                await _taskService.UpdateAsync(taskId, task);
+                return Ok();
+            }
+            return Forbid();
+        }
+
+        if (User.IsInRole("Employee"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null && task.ExecutorId == employee.Id)
+            {
+                task.Status = status;
+                await _taskService.UpdateAsync(taskId, task);
+                return Ok();
+            }
+            return Forbid();
+        }
+
+        return Forbid();
     }
 
     [HttpPost]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> DeleteTask(int taskId)
     {
+        var task = await _taskService.GetByIdAsync(taskId);
+        if (task == null) return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            var project = await _projectService.GetByIdAsync(task.ProjectId);
+            if (project == null || project.ProjectManagerId != employee?.Id)
+                return Forbid();
+        }
+
         await _taskService.DeleteAsync(taskId);
         return Ok();
     }
 
     [HttpPost]
+    [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> AddTaskToProject(int projectId, string name, int authorId, int? executorId, int priority, string? comment)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -134,6 +260,15 @@ public class ProjectsController : Controller
         var author = await _employeeService.GetByIdAsync(authorId);
         if (author == null)
             return BadRequest("Author not found");
+
+        var user = await _userManager.GetUserAsync(User);
+        if (User.IsInRole("ProjectManager"))
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            var project = await _projectService.GetByIdAsync(projectId);
+            if (project == null || project.ProjectManagerId != employee?.Id)
+                return Forbid();
+        }
 
         var task = new TaskItem
         {

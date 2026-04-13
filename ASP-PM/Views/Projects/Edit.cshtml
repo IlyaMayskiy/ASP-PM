@@ -253,13 +253,21 @@
             }
 
             $(document).on('change', '.task-status', function() {
-                const taskId = $(this).data('task-id');
-                const newStatus = $(this).val();
-                fetch('@Url.Action("UpdateTaskStatus", "Projects")', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ taskId: taskId, status: newStatus })
-                }).then(() => loadTasks());
+                var select = $(this);
+                var taskId = select.data('task-id');
+                var newStatus = select.val();
+                $.ajax({
+                    url: '@Url.Action("UpdateTaskStatus", "Projects")',
+                    type: 'POST',
+                    data: { taskId: taskId, status: newStatus },
+                    success: function() {
+                        console.log('Status updated');
+                    },
+                    error: function() {
+                        alert('Error updating status');
+                        loadTasks();
+                    }
+                });
             });
 
             $(document).on('click', '.delete-task', function() {

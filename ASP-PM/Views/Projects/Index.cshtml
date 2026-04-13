@@ -3,17 +3,13 @@
 @{
     ViewData["Title"] = "Projects";
 }
-<style>
-    .clickable-row{
-        cursor: pointer;
-    }
-</style>
+
 <h2>Projects</h2>
-
-<p>
-    <a asp-controller="ProjectWizard" asp-action="Wizard" class="btn btn-success">Create New Project</a>
-</p>
-
+@if (User.IsInRole("Director") || User.IsInRole("ProjectManager")){
+    <p>
+        <a asp-controller="ProjectWizard" asp-action="Wizard" class="btn btn-success">New Project</a>
+    </p>
+}
 <form method="get" asp-action="Index" class="mb-3">
     <div class="row g-2 align-items-end">
         <div class="col-md-2">
@@ -71,33 +67,31 @@
     <tbody>
         @foreach (var item in Model)
         {
-                <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Id })">
-                    <td>@item.Name</td>
-                    <td>@item.ClientCompany</td>
-                    <td>@item.ExecutorCompany</td>
-                    <td>@item.StartDate.ToShortDateString()</td>
-                    <td>@item.EndDate.ToShortDateString()</td>
-                    <td>@item.Priority</td>
-                    <td>@(item.ProjectManager?.FullName ?? "-")</td>
-                    <td> @(item.Tasks?.Count ?? 0)</td>
-                    <td>
+            var canEditDelete = User.IsInRole("Director") || (User.IsInRole("ProjectManager") && item.ProjectManagerId == ViewBag.CurrentEmployeeId);
+            var canViewDetails = !canEditDelete && User.IsInRole("Employee") && item.Executors.Any(e => e.Id == ViewBag.CurrentEmployeeId);
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.ClientCompany</td>
+                <td>@item.ExecutorCompany</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
+                <td>@item.Priority</td>
+                <td>@(item.ProjectManager?.FullName ?? "-")</td>
+                <td><a asp-action="Details" asp-route-id="@item.Id">@(item.Tasks?.Count ?? 0)</a></td>
+                <td>
+                    @if (canEditDelete)
+                    {
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline-block">
+                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this project?')">Delete</button>
                         </form>
-                    </td>
-                </tr>
+                    }
+                    else if (canViewDetails)
+                    {
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    }
+                  </td>
+              </tr>
         }
     </tbody>
 </table>
-<script>
-    document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function(e) {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.btn')) {
-                return;
-            }
-            const url = this.dataset.href;
-            if (url) window.location.href = url;
-        });
-    });
-</script>
