@@ -7,6 +7,10 @@ using System.Text.Json;
 
 namespace ASP_PM.Controllers;
 
+/// <summary>
+/// Five‑step wizard for creating a new project. Keeps data in TempData between steps.
+/// Step 5 handles drag‑&‑drop file uploads and moves them to final storage on finish.
+/// </summary>
 [Authorize(Roles = "Director,ProjectManager")]
 public class ProjectWizardController : Controller
 {
@@ -23,6 +27,7 @@ public class ProjectWizardController : Controller
         _userManager = userManager;
     }
 
+    /// <summary>Entry point – shows the first step of the wizard.</summary>
     public async Task<IActionResult> Wizard()
     {
         var model = new ProjectWizardModel();
@@ -43,6 +48,7 @@ public class ProjectWizardController : Controller
         return View(model);
     }
 
+    /// <summary>AJAX endpoint for Select2 – searches employees by name/email.</summary>
     public async Task<IActionResult> SearchEmployees(string term)
     {
         var employees = await _employeeService.GetAllAsync();
@@ -56,6 +62,7 @@ public class ProjectWizardController : Controller
         return Json(result);
     }
 
+    /// <summary>Accepts uploaded files via drag & drop, stores them temporarily, and returns their generated names.</summary>
     [HttpPost]
     public async Task<IActionResult> UploadFiles(List<IFormFile> files)
     {
@@ -79,6 +86,7 @@ public class ProjectWizardController : Controller
         return Json(new { success = true, files = fileNames });
     }
 
+    /// <summary>Final step: creates the project, moves uploaded files to permanent location, and saves document records.</summary>
     [HttpPost]
     public async Task<IActionResult> Finish(ProjectWizardModel model)
     {

@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP_PM.Controllers;
 
+/// <summary>
+/// Heart of the app – project CRUD, filtering, documents, and inline task management.
+/// Access rules: Director sees everything, ProjectManager sees only his projects, Employee sees only projects where he is an executor.
+/// </summary>
 [Authorize]
 public class ProjectsController : Controller
 {
@@ -23,7 +27,7 @@ public class ProjectsController : Controller
         _userManager = userManager;
     }
 
-
+    /// <summary>Displays projects with filtering (date range, priority) and sorting. Results depend on user's role.</summary>
     public async Task<IActionResult> Index(DateTime? startDateFrom, DateTime? startDateTo, int? priority, string sortBy = "startdate", bool ascending = true)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -59,6 +63,7 @@ public class ProjectsController : Controller
         return View(projects);
     }
 
+     /// <summary>Shows project details along with its tasks.</summary>
     public async Task<IActionResult> Details(int id)
     {
         var project = await _projectService.GetByIdAsync(id);
@@ -78,6 +83,7 @@ public class ProjectsController : Controller
         return View(project);
     }
 
+    /// <summary>Edit form for a project. Managers can edit only their own projects.</summary>
     [Authorize(Roles = "Director,ProjectManager")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -126,6 +132,7 @@ public class ProjectsController : Controller
         return View(project);
     }
 
+    /// <summary>Only directors can delete a project.</summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Director,ProjectManager")]
@@ -146,6 +153,7 @@ public class ProjectsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    //Document
     [HttpGet]
     public async Task<IActionResult> GetFiles(int projectId)
     {
@@ -169,7 +177,7 @@ public class ProjectsController : Controller
         var result = await _projectService.DeleteDocumentAsync(id);
         return Json(new { success = result });
     }
-
+    //Tasks crud in project
     [HttpGet]
     public async Task<IActionResult> GetProjectTasks(int projectId)
     {

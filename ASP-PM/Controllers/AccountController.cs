@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASP_PM.Controllers;
 
+/// <summary>
+/// Handles login, logout, and access denied page.
+/// No registration here – new users are created by the director via Employees/Create.
+/// </summary>
 public class AccountController : Controller
 {
     private readonly UserManager<AppUser> _userManager;

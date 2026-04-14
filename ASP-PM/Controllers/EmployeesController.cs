@@ -7,6 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASP_PM.Controllers;
 
+/// <summary>
+/// Only directors can touch employees – that's the rule.
+/// Create, edit, delete, and see the whole list.
+/// Also handles linking employees to Identity users under the hood.
+/// </summary>
 [Authorize(Roles = "Director")]
 public class EmployeesController : Controller
 {
@@ -21,6 +26,7 @@ public class EmployeesController : Controller
         _roleManager = roleManager;
     }
 
+    /// <summary>Shows the list of all employees along with their assigned roles.</summary>
     public async Task<IActionResult> Index()
     {
         var employees = await _employeeService.GetAllAsync();
@@ -34,12 +40,14 @@ public class EmployeesController : Controller
         return View(employeeRoles);
     }
 
+    /// <summary>Displays the form to create a new employee (with password & role).</summary>
     public IActionResult Create()
     {
         ViewBag.Roles = new List<string> { "Employee", "ProjectManager" };
         return View();
     }
 
+    /// <summary>Processes the creation: creates both Employee and Identity user in one transaction.</summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(string firstName, string secondName, string? patronymic, string email, string password, string confirmPassword, string role)
@@ -98,6 +106,7 @@ public class EmployeesController : Controller
         return View();
     }
 
+    /// <summary>Shows the edit form for an employee. If it's the director editing himself, role picker is hidden.</summary>
     public async Task<IActionResult> Edit(int id)
     {
         var employee = await _employeeService.GetByIdAsync(id);
@@ -115,6 +124,7 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
+    /// <summary>Updates employee data, optionally resets password, and changes role (unless it's the director himself).</summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, string firstName, string secondName, string? patronymic, string email, string? password, string? confirmPassword, string role)
@@ -172,6 +182,7 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
+    /// <summary>Removes an employee and the linked Identity user permanently.</summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)

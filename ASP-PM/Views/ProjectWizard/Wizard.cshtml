@@ -11,11 +11,10 @@
     #fileList { margin-top: 10px; }
 </style>
 
-<h2>Create New Project (Wizard)</h2>
-
 <form id="wizardForm" method="post" enctype="multipart/form-data">
+    <!--Step 1 -->
     <div id="step1" class="step active">
-        <h3>Step 1: Basic Information</h3>
+        <h3>Basic Information</h3>
         <div class="form-group">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" />
@@ -35,9 +34,9 @@
         </div>
         <button type="button" class="btn btn-primary next-step">Next</button>
     </div>
-
+    <!--Step 2 -->
     <div id="step2" class="step">
-        <h3>Step 2: Companies</h3>
+        <h3>Companies</h3>
         <div class="form-group">
             <label asp-for="ClientCompany"></label>
             <input asp-for="ClientCompany" class="form-control" />
@@ -49,11 +48,11 @@
         <button type="button" class="btn btn-secondary prev-step">Back</button>
         <button type="button" class="btn btn-primary next-step">Next</button>
     </div>
-
+    <!--Step 3(if the role is not a director, skip it) -->
     @if (!(ViewBag.IsManager == true))
     {
         <div id="step3" class="step">
-            <h3>Step 3: Project Manager</h3>
+            <h3>Project Manager</h3>
             <div class="form-group">
                 <label>Search Manager</label>
                 <select id="managerSelect" name="ProjectManagerId" class="form-control" style="width: 100%;"></select>
@@ -66,9 +65,9 @@
     {
         <div id="step3" style="display:none;"></div>
     }
-
+    <!-- step 4 -->
     <div id="step4" class="step">
-        <h3>Step 4: Executors</h3>
+        <h3>Executors</h3>
         <div class="form-group">
             <label>Search and select executors</label>
             <select id="executorsSelect" name="SelectedExecutors" multiple class="form-control" style="width: 100%;"></select>
@@ -76,11 +75,11 @@
         <button type="button" class="btn btn-secondary prev-step">Back</button>
         <button type="button" class="btn btn-primary next-step">Next</button>
     </div>
-
+    <!-- step 5 -->
     <div id="step5" class="step">
-        <h3>Step 5: Upload Documents</h3>
+        <h3>Upload Documents</h3>
         <div id="dropzone" class="dropzone">
-            Drag & drop files here or click to select
+            Drag & drop
         </div>
         <input type="file" id="fileInput" multiple style="display:none;" />
         <ul id="fileList"></ul>

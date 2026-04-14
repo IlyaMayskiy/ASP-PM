@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP_PM.Controllers;
 
+/// <summary>
+/// Standalone CRUD for tasks (bonus task #1). Access: Director and ProjectManager can do everything, Employee only views.
+/// </summary>
 [Authorize]
 public class TasksController : Controller
 {
@@ -23,14 +26,48 @@ public class TasksController : Controller
         _userManager = userManager;
     }
 
+    /// <summary>List of tasks with filtering by project and status, and sorting by name, priority or status.</summary>
     public async Task<IActionResult> Index(int? projectId, TaskState? status, string sortBy = "name", bool ascending = true)
     {
-        var tasks = await _taskService.GetFilteredAsync(projectId, status, sortBy, ascending);
+        var user = await _userManager.GetUserAsync(User);
+        var isDirector = User.IsInRole("Director");
+        var isManager = User.IsInRole("ProjectManager");
+        var isEmployee = User.IsInRole("Employee");
+
+        IEnumerable<TaskItem> tasks;
+        if (isDirector)
+        {
+            tasks = await _taskService.GetFilteredAsync(projectId, status, sortBy, ascending);
+        }
+        else if (isManager)
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+            {
+                var managerProjects = await _projectService.GetProjectsByManagerIdAsync(employee.Id, null, null, null, "Id", true);
+                var projectIds = managerProjects.Select(p => p.Id).ToList();
+                var allTasks = await _taskService.GetFilteredAsync(projectId, status, sortBy, ascending);
+                tasks = allTasks.Where(t => projectIds.Contains(t.ProjectId));
+            }
+            else tasks = new List<TaskItem>();
+        }
+        else
+        {
+            var employee = await _employeeService.GetByAppUserIdAsync(user.Id);
+            if (employee != null)
+            {
+                var allTasks = await _taskService.GetFilteredAsync(projectId, status, sortBy, ascending);
+                tasks = allTasks.Where(t => t.ExecutorId == employee.Id || t.AuthorId == employee.Id);
+            }
+            else tasks = new List<TaskItem>();
+        }
+
         ViewBag.Projects = new SelectList(await _projectService.GetAllAsync(), "Id", "Name");
         ViewBag.Statuses = Enum.GetValues(typeof(TaskState)).Cast<TaskState>().Select(s => new SelectListItem { Value = s.ToString(), Text = s.ToString() });
         return View(tasks);
     }
 
+    /// <summary>Form to create a new task. Optional projectId pre-selects the project.</summary>
     public async Task<IActionResult> Create(int? projectId)
     {
         ViewBag.Projects = new SelectList(await _projectService.GetAllAsync(), "Id", "Name", projectId);
@@ -55,6 +92,7 @@ public class TasksController : Controller
         return View(task);
     }
 
+    /// <summary>Edit form. Managers and directors can edit all fields; employees should not reach this (but if they do, they'll get a 403).</summary>
     public async Task<IActionResult> Edit(int id)
     {
         var task = await _taskService.GetByIdAsync(id);
