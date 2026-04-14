@@ -93,7 +93,7 @@
 }
 else
 {
-    <p>No tasks for this project.</p>
+    <p>No tasks</p>
 }
 
 <div>
@@ -114,8 +114,6 @@ else
                     url: '@Url.Action("UpdateTaskStatus", "Projects")',
                     type: 'POST',
                     data: { taskId: taskId, status: newStatus },
-                    success: function() { console.log('Status updated'); },
-                    error: function() { alert('Error updating status'); }
                 });
             });
         });

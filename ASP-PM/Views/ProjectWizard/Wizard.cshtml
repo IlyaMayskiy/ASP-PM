@@ -140,7 +140,7 @@
 
         $('#managerSelect').select2({
             ajax: {
-                url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                url: '@Url.Action("SearchEmployees", "ProjectWizard")?role=manager',
                 dataType: 'json',
                 delay: 300,
                 data: function(params) { return { term: params.term || '' }; },
@@ -165,7 +165,7 @@
 
         $('#executorsSelect').select2({
             ajax: {
-                url: '@Url.Action("SearchEmployees", "ProjectWizard")',
+                url: '@Url.Action("SearchEmployees", "ProjectWizard")?role=executor',
                 dataType: 'json',
                 delay: 300,
                 data: function(params) { return { term: params.term || '' }; },

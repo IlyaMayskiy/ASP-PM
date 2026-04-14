@@ -48,8 +48,8 @@ public class ProjectWizardController : Controller
         return View(model);
     }
 
-    /// <summary>AJAX endpoint for Select2 – searches employees by name/email.</summary>
-    public async Task<IActionResult> SearchEmployees(string term)
+    /// <summary>The AJAX endpoint for Select2 searches for employees by name/email and filters by role.</summary>
+    public async Task<IActionResult> SearchEmployees(string term, string role = null)
     {
         var employees = await _employeeService.GetAllAsync();
         if (!string.IsNullOrEmpty(term))
@@ -58,7 +58,22 @@ public class ProjectWizardController : Controller
                 e.FullName.Contains(term, StringComparison.OrdinalIgnoreCase) ||
                 e.Email.Contains(term, StringComparison.OrdinalIgnoreCase));
         }
-        var result = employees.Select(e => new { id = e.Id, text = e.FullName });
+        
+        var filtered = new List<Employee>();
+        foreach (var emp in employees)
+        {       
+            var user = await _userManager.FindByIdAsync(emp.AppUserId);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            
+            if (string.IsNullOrEmpty(role))
+                filtered.Add(emp);
+            else if (role == "manager" && (userRoles.Contains("Director") || userRoles.Contains("ProjectManager")))
+                filtered.Add(emp);
+            else if (role == "executor" && userRoles.Contains("Employee"))
+                filtered.Add(emp);
+        }
+        
+        var result = filtered.Select(e => new { id = e.Id, text = e.FullName });
         return Json(result);
     }
 

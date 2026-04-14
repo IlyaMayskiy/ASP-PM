@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-md-2">
                     <select id="newTaskAuthor" class="form-control">
-                        <option value="">-- Author * --</option>
+                        <option value="">-- Author --</option>
                         @foreach (var emp in ViewBag.AllEmployees as IEnumerable<ASP_PM.Models.Employee>)
                         {
                             <option value="@emp.Id">@emp.FullName</option>
@@ -260,13 +260,6 @@
                     url: '@Url.Action("UpdateTaskStatus", "Projects")',
                     type: 'POST',
                     data: { taskId: taskId, status: newStatus },
-                    success: function() {
-                        console.log('Status updated');
-                    },
-                    error: function() {
-                        alert('Error updating status');
-                        loadTasks();
-                    }
                 });
             });
 

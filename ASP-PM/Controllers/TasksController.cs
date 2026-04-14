@@ -92,7 +92,7 @@ public class TasksController : Controller
         return View(task);
     }
 
-    /// <summary>Edit form. Managers and directors can edit all fields; employees should not reach this (but if they do, they'll get a 403).</summary>
+    /// <summary>Edit form. Managers and directors can edit all fields; employees should not reach this.</summary>
     public async Task<IActionResult> Edit(int id)
     {
         var task = await _taskService.GetByIdAsync(id);
