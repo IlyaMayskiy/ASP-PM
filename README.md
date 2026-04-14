@@ -45,7 +45,7 @@
    ```bash
    dotnet restore
    dotnet ef database update
-   dotnet run
+   dotnet watch run
    ```
 
 3. Открыть https://localhost:5274.

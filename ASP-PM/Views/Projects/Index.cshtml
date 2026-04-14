@@ -77,7 +77,7 @@
                 <td>@item.EndDate.ToShortDateString()</td>
                 <td>@item.Priority</td>
                 <td>@(item.ProjectManager?.FullName ?? "-")</td>
-                <td><a asp-action="Details" asp-route-id="@item.Id">@(item.Tasks?.Count ?? 0)</a></td>
+                <td>@(item.Tasks?.Count ?? 0)</td>
                 <td>
                     @if (canEditDelete)
                     {
@@ -86,10 +86,7 @@
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this project?')">Delete</button>
                         </form>
                     }
-                    else if (canViewDetails)
-                    {
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
                   </td>
               </tr>
         }
