@@ -3,6 +3,42 @@
   "WorkspaceRootPath": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\tasks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\tasks\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\tasks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\tasks\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\tasks\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\tasks\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\controllers\\taskscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\services\\taskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\itaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\services\\itaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\iprojectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\services\\iprojectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\models\\taskitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\employees\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\employees\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -21,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\views\\projects\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\views\\projects\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -49,10 +81,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\employeeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\services\\employeeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\iprojectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|solutionrelative:asp-pm\\services\\iprojectservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A8FE43F8-EAD9-4F75-90F4-9555FD26317F}|ASP-PM\\ASP-PM.csproj|c:\\users\\scopi\\onedrive\\desktop\\myprojects\\asp-test\\asp-pm\\asp-pm\\services\\iemployeeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -86,24 +114,115 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Index.cshtml",
+              "RelativeDocumentMoniker": "ASP-PM\\Views\\Tasks\\Index.cshtml",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Index.cshtml",
+              "RelativeToolTip": "ASP-PM\\Views\\Tasks\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-12T15:54:46.281Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Edit.cshtml",
+              "RelativeDocumentMoniker": "ASP-PM\\Views\\Tasks\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Edit.cshtml",
+              "RelativeToolTip": "ASP-PM\\Views\\Tasks\\Edit.cshtml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAMwCoAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-12T15:54:36.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Create.cshtml",
+              "RelativeDocumentMoniker": "ASP-PM\\Views\\Tasks\\Create.cshtml",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Tasks\\Create.cshtml",
+              "RelativeToolTip": "ASP-PM\\Views\\Tasks\\Create.cshtml",
+              "ViewState": "AgIAABMAAAAAAAAAAAAMwCgAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-12T15:54:26.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TasksController.cs",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Controllers\\TasksController.cs",
+              "RelativeDocumentMoniker": "ASP-PM\\Controllers\\TasksController.cs",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Controllers\\TasksController.cs",
+              "RelativeToolTip": "ASP-PM\\Controllers\\TasksController.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwBgAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-12T15:53:45.598Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TaskService.cs",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\TaskService.cs",
+              "RelativeDocumentMoniker": "ASP-PM\\Services\\TaskService.cs",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\TaskService.cs",
+              "RelativeToolTip": "ASP-PM\\Services\\TaskService.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAADgv0IAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-12T15:53:09.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "ITaskService.cs",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\ITaskService.cs",
+              "RelativeDocumentMoniker": "ASP-PM\\Services\\ITaskService.cs",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\ITaskService.cs",
+              "RelativeToolTip": "ASP-PM\\Services\\ITaskService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-12T15:52:43.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "TaskItem.cs",
+              "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Models\\TaskItem.cs",
+              "RelativeDocumentMoniker": "ASP-PM\\Models\\TaskItem.cs",
+              "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Models\\TaskItem.cs",
+              "RelativeToolTip": "ASP-PM\\Models\\TaskItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-12T15:50:59.866Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Projects\\Edit.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Projects\\Edit.cshtml",
               "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Projects\\Edit.cshtml",
               "RelativeToolTip": "ASP-PM\\Views\\Projects\\Edit.cshtml",
-              "ViewState": "AgIAABkAAAAAAAAAAIBZwDsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACgAAAAAAAAAAAAAAEcAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-04-10T14:13:12.454Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 16,
               "Title": "Index.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Employees\\Index.cshtml.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Employees\\Index.cshtml.cs",
@@ -111,12 +230,11 @@
               "RelativeToolTip": "ASP-PM\\Views\\Employees\\Index.cshtml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-10T14:10:21.245Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T14:10:21.245Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 11,
               "Title": "ProjectsController.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Controllers\\ProjectsController.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Controllers\\ProjectsController.cs",
@@ -124,12 +242,11 @@
               "RelativeToolTip": "ASP-PM\\Controllers\\ProjectsController.cs",
               "ViewState": "AgIAAD8AAAAAAAAAAADwv14AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-10T13:53:55.88Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T13:53:55.88Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 18,
               "Title": "ProjectService.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\ProjectService.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Services\\ProjectService.cs",
@@ -137,25 +254,24 @@
               "RelativeToolTip": "ASP-PM\\Services\\ProjectService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-10T13:38:30.341Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T13:38:30.341Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 6,
               "Title": "IProjectService.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\IProjectService.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Services\\IProjectService.cs",
               "ToolTip": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\IProjectService.cs",
               "RelativeToolTip": "ASP-PM\\Services\\IProjectService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-10T13:35:28.043Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 15,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Employees\\Index.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Employees\\Index.cshtml",
@@ -163,12 +279,11 @@
               "RelativeToolTip": "ASP-PM\\Views\\Employees\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAjwBoAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-09T17:32:27.679Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T17:32:27.679Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 12,
               "Title": "EmployeesController.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Controllers\\EmployeesController.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Controllers\\EmployeesController.cs",
@@ -176,12 +291,11 @@
               "RelativeToolTip": "ASP-PM\\Controllers\\EmployeesController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T17:07:37.344Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T17:07:37.344Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 19,
               "Title": "EmployeeService.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\EmployeeService.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Services\\EmployeeService.cs",
@@ -189,12 +303,11 @@
               "RelativeToolTip": "ASP-PM\\Services\\EmployeeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:55:53.758Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:55:53.758Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 13,
               "Title": "Employee.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Models\\Employee.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Models\\Employee.cs",
@@ -202,12 +315,11 @@
               "RelativeToolTip": "ASP-PM\\Models\\Employee.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:03:51.736Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:03:51.736Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 9,
               "Title": "Edit.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Employees\\Edit.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Employees\\Edit.cshtml",
@@ -220,7 +332,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 10,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Employees\\Create.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Employees\\Create.cshtml",
@@ -228,12 +340,11 @@
               "RelativeToolTip": "ASP-PM\\Views\\Employees\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-09T17:37:38.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T17:37:38.15Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 14,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Projects\\Index.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Projects\\Index.cshtml",
@@ -241,12 +352,11 @@
               "RelativeToolTip": "ASP-PM\\Views\\Projects\\Index.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAIBZwEsAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-04-10T14:11:35.329Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T14:11:35.329Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 25,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Views\\Projects\\Create.cshtml",
               "RelativeDocumentMoniker": "ASP-PM\\Views\\Projects\\Create.cshtml",
@@ -257,7 +367,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 20,
               "Title": "IEmployeeService.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Services\\IEmployeeService.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Services\\IEmployeeService.cs",
@@ -265,12 +375,11 @@
               "RelativeToolTip": "ASP-PM\\Services\\IEmployeeService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:54:41.296Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:54:41.296Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 24,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\appsettings.Development.json",
               "RelativeDocumentMoniker": "ASP-PM\\appsettings.Development.json",
@@ -278,12 +387,11 @@
               "RelativeToolTip": "ASP-PM\\appsettings.Development.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-09T16:15:26.27Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:15:26.27Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 22,
               "Title": "Project.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Models\\Project.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Models\\Project.cs",
@@ -291,12 +399,11 @@
               "RelativeToolTip": "ASP-PM\\Models\\Project.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:24:33.59Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:24:33.59Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 17,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Program.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Program.cs",
@@ -304,12 +411,11 @@
               "RelativeToolTip": "ASP-PM\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:12:06.212Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:12:06.212Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 23,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\appsettings.json",
               "RelativeDocumentMoniker": "ASP-PM\\appsettings.json",
@@ -317,12 +423,11 @@
               "RelativeToolTip": "ASP-PM\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-09T16:14:51.352Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:14:51.352Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 21,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\scopi\\OneDrive\\Desktop\\MyProjects\\ASP-test\\ASP-PM\\ASP-PM\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "ASP-PM\\Data\\AppDbContext.cs",
@@ -330,8 +435,7 @@
               "RelativeToolTip": "ASP-PM\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-09T16:09:13.367Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T16:09:13.367Z"
             }
           ]
         }
